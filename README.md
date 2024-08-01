@@ -46,7 +46,7 @@ brave-browser 1.MOUSE_TRACKER.html
 
 
 
-O que cada arquivo
+O que cada arquivo faz:
 
 
 - registra todas as posições que o mouse fez em um período de 25 segundos:
