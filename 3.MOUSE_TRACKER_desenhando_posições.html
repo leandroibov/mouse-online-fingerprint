@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcar Posições</title>
+    <style>
+        #trajectoryCanvas {
+            border: 1px solid black;
+            font-family: monospace; /* Usar uma fonte de largura fixa para melhor alinhamento dos caracteres */
+        }
+    </style>
+</head>
+<body>
+    <h1>Marcar Posições</h1>
+    <label for="positionsInput">Insira as posições (formato: (x, y); (x, y); ...):</label>
+    <br>
+    <textarea id="positionsInput" rows="4" cols="50" placeholder="(1887, 12); (1900, 20); (1920, 30)"></textarea>
+    <br>
+    <button onclick="markPositions()">Marcar Posições</button>
+    <br><br>
+    <canvas id="trajectoryCanvas" width="2000" height="1000"></canvas>
+
+    <script>
+        function markPositions() {
+            const canvas = document.getElementById('trajectoryCanvas');
+            const ctx = canvas.getContext('2d');
+            const input = document.getElementById('positionsInput').value.trim();
+
+            // Limpar canvas antes de desenhar
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Parse the positions from the input
+            const positions = input.split(';').map(pos => {
+                // Remove espaços e parênteses, e dividir por vírgula
+                const [x, y] = pos.replace(/\s+/g, '').replace(/\(|\)/g, '').split(',').map(Number);
+                return { x, y };
+            }).filter(pos => !isNaN(pos.x) && !isNaN(pos.y));
+
+            if (positions.length === 0) {
+                alert('Insira pelo menos um ponto para marcar.');
+                return;
+            }
+
+            // Configurar estilo do texto
+            ctx.font = '20px monospace'; // Define o tamanho e a fonte do texto
+            ctx.fillStyle = 'red'; // Cor do texto
+
+            // Desenhar "@" em cada posição
+            positions.forEach(pos => {
+                ctx.fillText('@', pos.x, pos.y);
+            });
+
+            // Mensagem de depuração
+            console.log('Posições marcadas:', positions);
+        }
+
+        // Função de teste para verificar se o canvas está funcionando
+        function testCanvas() {
+            const canvas = document.getElementById('trajectoryCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Desenhar um retângulo simples
+            ctx.beginPath();
+            ctx.rect(10, 10, 100, 100);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // Chamar função de teste ao carregar a página
+        window.onload = testCanvas;
+    </script>
+</body>
+</html>
+

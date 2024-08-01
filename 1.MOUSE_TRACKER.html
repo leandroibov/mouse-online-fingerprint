@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura de Movimentação do Mouse</title>
+    <style>
+        body {
+            position: relative;
+            height: 2000px; /* Para permitir rolar a página e testar a movimentação do mouse */
+        }
+        .marker {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        #startButton {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #status {
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            font-size: 16px;
+        }
+        #results {
+            position: fixed;
+            top: 90px;
+            left: 10px;
+            font-size: 16px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            max-width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <button id="startButton">Iniciar Teste</button>
+    <div id="status">Clique no botão para iniciar o teste.</div>
+    <div id="results"></div>
+    <script>
+        const positions = [];
+        const displayInterval = 25 * 1000; // 25 segundos
+        let timer;
+        let monitoring = false;
+
+        function addPosition(x, y) {
+            positions.push({ x, y });
+        }
+
+        document.addEventListener('mousemove', (event) => {
+            if (!monitoring) return;
+
+            const currentX = event.clientX;
+            const currentY = event.clientY;
+            addPosition(currentX, currentY);
+        });
+
+        function showPositions() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Posições registradas durante o teste:</h2>';
+            const list = document.createElement('ul');
+
+            positions.forEach(pos => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Posição: (${pos.x}px, ${pos.y}px)`;
+                list.appendChild(listItem);
+            });
+
+            resultsDiv.appendChild(list);
+        }
+
+        function startTest() {
+            if (monitoring) return;
+
+            monitoring = true;
+            document.getElementById('status').textContent = 'Teste em andamento...';
+
+            timer = setTimeout(() => {
+                showPositions();
+                document.getElementById('status').textContent = 'Teste concluído.';
+                monitoring = false;
+                clearTimeout(timer);
+            }, displayInterval);
+        }
+
+        document.getElementById('startButton').addEventListener('click', startTest);
+    </script>
+</body>
+</html>
+

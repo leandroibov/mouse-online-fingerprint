@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detecção de Clique com o Botão Direito do Mouse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+        .tracking-area {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            height: 500px; /* Para uma área visível e testável */
+        }
+        .info {
+            position: absolute;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 5px;
+            font-size: 14px;
+            display: none; /* Inicialmente escondido */
+            color: red;
+        }
+        .timer {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">Tempo restante: 25s</div>
+    <div class="tracking-area" id="trackingArea">
+        Clique com o botão direito aqui.
+        <div class="info" id="infoBox"></div>
+    </div>
+
+    <script>
+        let timer;
+        const duration = 25 * 1000; // 25 segundos em milissegundos
+        const infoBox = document.getElementById('infoBox');
+        const timerElement = document.getElementById('timer');
+        const trackingArea = document.getElementById('trackingArea');
+        let endTime;
+
+        // Função para exibir a mensagem de clique direito
+        function handleRightClick(event) {
+            event.preventDefault(); // Impede o menu de contexto padrão de aparecer
+
+            const x = event.pageX; // Coordenada X do clique
+            const y = event.pageY; // Coordenada Y do clique
+
+            // Exibir a mensagem de clique direito próximo ao local do clique
+            infoBox.textContent = 'EU SEI ONDE VOCÊ CLICOU!';
+            infoBox.style.display = 'block';
+            infoBox.style.left = `${x}px`;
+            infoBox.style.top = `${y}px`;
+        }
+
+        // Função para atualizar o temporizador
+        function updateTimer() {
+            const remaining = Math.max(0, endTime - Date.now());
+            timerElement.textContent = `Tempo restante: ${Math.ceil(remaining / 1000)}s`;
+            if (remaining <= 0) {
+                clearInterval(timer);
+                timerElement.textContent = 'Tempo esgotado!';
+                trackingArea.removeEventListener('contextmenu', handleRightClick);
+                document.removeEventListener('click', hideInfoBox);
+            }
+        }
+
+        // Função para ocultar a caixa de informações ao clicar em qualquer outro lugar
+        function hideInfoBox() {
+            infoBox.style.display = 'none';
+        }
+
+        // Função para iniciar o teste
+        function startTest() {
+            endTime = Date.now() + duration;
+            timer = setInterval(updateTimer, 1000); // Atualiza o temporizador a cada segundo
+
+            // Adiciona ouvintes de eventos
+            trackingArea.addEventListener('contextmenu', handleRightClick);
+            document.addEventListener('click', hideInfoBox);
+
+            // Atualiza o temporizador imediatamente
+            updateTimer();
+        }
+
+        // Inicia o teste automaticamente ao carregar a página
+        window.onload = startTest;
+    </script>
+</body>
+</html>
+

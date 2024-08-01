@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocidade do Movimento do Mouse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #status {
+            margin-bottom: 20px;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calcular Velocidade do Movimento do Mouse</h1>
+    <div id="status">Clique no botão para iniciar o teste.</div>
+    <button id="startButton">Iniciar Teste</button>
+    <div id="results"></div>
+
+    <script>
+        const positions = [];
+        const interval = 5 * 1000; // Intervalo de 5 segundos em milissegundos
+        const totalDuration = 25 * 1000; // Duração total do teste em milissegundos (25 segundos)
+        let timer;
+        let monitoring = false;
+        let startTime;
+
+        // Função para adicionar a posição do mouse
+        function addPosition(x, y) {
+            const now = Date.now();
+            positions.push({ x, y, time: now });
+        }
+
+        // Função para calcular a distância entre dois pontos
+        function calculateDistance(p1, p2) {
+            return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+        }
+
+        // Função para calcular a velocidade entre pontos
+        function calculateVelocities(start, end) {
+            let output = '';
+            let lastPos = positions[start];
+
+            for (let i = start + 1; i <= end; i++) {
+                const currentPos = positions[i];
+                const distance = calculateDistance(lastPos, currentPos);
+                const timeDiff = (currentPos.time - lastPos.time) / 1000; // Tempo em segundos
+                const speed = distance / timeDiff; // Velocidade em pixels por segundo
+
+                output += `<p>De (${lastPos.x}, ${lastPos.y}) para (${currentPos.x}, ${currentPos.y}) - Distância: ${distance.toFixed(2)} px, Velocidade: ${speed.toFixed(2)} px/s</p>`;
+                lastPos = currentPos;
+            }
+
+            return output;
+        }
+
+        // Função para processar intervalos e calcular velocidades
+        function processIntervals() {
+            let resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Resultados:</h2>';
+            let output = '';
+
+            for (let i = 0; i < positions.length - 1; i++) {
+                let endIndex = positions.findIndex(p => p.time > positions[i].time + interval);
+
+                if (endIndex === -1) endIndex = positions.length - 1; // Se não encontrar, processa até o final
+
+                output += `<h3>Intervalo de ${new Date(positions[i].time).toLocaleTimeString()} até ${new Date(positions[endIndex].time).toLocaleTimeString()}:</h3>`;
+                output += calculateVelocities(i, endIndex);
+
+                i = endIndex - 1; // Avança para o próximo intervalo
+            }
+
+            resultsDiv.innerHTML += output;
+        }
+
+        // Inicia o teste
+        function startTest() {
+            if (monitoring) return;
+
+            monitoring = true;
+            document.getElementById('status').textContent = 'Teste em andamento...';
+
+            // Coleta as posições do mouse em intervalos
+            startTime = Date.now();
+            positions.length = 0; // Limpa as posições anteriores
+
+            const collectPositions = () => {
+                if (Date.now() - startTime < totalDuration) {
+                    // Adiciona a posição do mouse
+                    document.addEventListener('mousemove', (event) => {
+                        if (monitoring) {
+                            addPosition(event.clientX, event.clientY);
+                        }
+                    });
+
+                    setTimeout(collectPositions, interval);
+                } else {
+                    // Calcula e exibe as velocidades para os intervalos
+                    processIntervals();
+                    document.getElementById('status').textContent = 'Teste concluído.';
+                    monitoring = false;
+                }
+            };
+
+            collectPositions();
+        }
+
+        document.getElementById('startButton').addEventListener('click', startTest);
+    </script>
+</body>
+</html>
+

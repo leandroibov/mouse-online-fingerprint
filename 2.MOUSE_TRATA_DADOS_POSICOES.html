@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatar Posições</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #inputArea, #outputArea {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formatar Lista de Posições</h1>
+    <div id="inputArea">
+        <label for="inputText">Insira as posições:</label>
+        <br>
+        <textarea id="inputText" placeholder="Posição: (85px, 36px)
+Posição: (86px, 41px)
+Posição: (91px, 59px)
+Posição: (94px, 86px)
+Posição: (96px, 115px)
+Posição: (96px, 139px)
+Posição: (96px, 155px)
+Posição: (95px, 161px)"></textarea>
+        <br>
+        <button onclick="formatPositions()">Formatar</button>
+    </div>
+    <div id="outputArea">
+        <label for="outputText">Posições formatadas:</label>
+        <br>
+        <textarea id="outputText" readonly></textarea>
+    </div>
+
+    <script>
+        function formatPositions() {
+            const inputText = document.getElementById('inputText').value.trim();
+            const lines = inputText.split('\n');
+            const formattedLines = lines.map((line, index) => {
+                // Remove "Posição: " e "px"
+                let formattedLine = line.replace('Posição: ', '')
+                                        .replace(/px/g, '')
+                                        .trim();
+
+                // Adiciona o formato desejado
+                formattedLine = formattedLine.replace(/\)$/, index === lines.length - 1 ? ')' : ');');
+                
+                return formattedLine;
+            });
+            
+            // Atualiza o campo de saída com as linhas formatadas
+            document.getElementById('outputText').value = formattedLines.join('\n');
+        }
+    </script>
+</body>
+</html>
+
