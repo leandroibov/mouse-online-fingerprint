@@ -1,8 +1,7 @@
 
-###########################################################################################################
 
 
-HTML com java script provando as capturas do mouse:
+# HTML com java script provando as capturas do mouse:
 
 
 Como usar:
@@ -23,12 +22,11 @@ firefox 1.MOUSE_TRACKER.html
 brave-browser 1.MOUSE_TRACKER.html
 
 
-###########################################################################################################
 
 
 
 
-O que cada arquivo faz:
+# O que cada arquivo faz:
 
 
 - registra todas as posições que o mouse fez em um período de 25 segundos:
@@ -72,11 +70,11 @@ formato do pedido, tratado antes, copiar e colar (1887, 12); (1900, 20); (1920, 
 - 
 
 
-##################################################################################################
 
-Doe monero para nos ajudar: 
 
-87JGuuwXzoMGwQAcSD7cvS7D7iacPpN2f5bVqETbUvCgdEmrPZa12gh5DSiKKRgdU7c5n5x1UvZLj8PQ7AAJSso5CQxgjak
+# Doe monero para nos ajudar: (donate XMR)
+
+    87JGuuwXzoMGwQAcSD7cvS7D7iacPpN2f5bVqETbUvCgdEmrPZa12gh5DSiKKRgdU7c5n5x1UvZLj8PQ7AAJSso5CQxgjak
 
 
 
